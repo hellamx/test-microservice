@@ -64,7 +64,7 @@
    
 ## Интерфейсы:
 
-    - Админки и внутреннее API защищены basic auth на уровне nginx (по умолчанию login: `admin`, pass: `admin`)
+    - Админка и внутреннее API защищены basic auth на уровне nginx (по умолчанию login: `admin`, pass: `admin`)
     - Админка: [http://localhost:8083](http://localhost:8083)
     - phpMyAdmin: [http://localhost:8082](http://localhost:8082) (по умолчанию login: `dev`, pass: `dev`)
     - Horizon: [http://localhost:8083/horizon](http://localhost:8083/horizon)

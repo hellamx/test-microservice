@@ -2,7 +2,7 @@
 
 - **Nginx** — веб-сервер и обратный прокси
 - **PHP-FPM** — обработка стандартных HTTP-запросов Laravel и API для внутренней админки `/api/internal/xxx`
-- **PHP Octane** — laravel octane на базер swoole для внешних API `/api/external/xxx`
+- **PHP Octane** — laravel octane на базе swoole для внешних API `/api/external/xxx`
 - **Redis** — для очередей
 - **MariaDB** — бд
 - **Horizon** — мониторинг и управление очередями `/horizon`

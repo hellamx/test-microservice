@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "63ee6cc5-f3f5-44ef-b7d8-3472e271597a",
+		"name": "Payments API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27396647"
+	},
+	"item": [
+		{
+			"name": "Create payment request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Signature",
+						"value": "64e2667cb287ce52f3449fea815e9129b30f0d6553cd11d0c6341e1218129239",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"data\":{\"payment_id\":\"8403db96-3b4a-4dd1-bf9d-de87d53007c5\",\"login\":\"test\",\"project_name\":\"test\",\"details\":\"1234567890123\",\"amount\":10460.74,\"currency\":\"RUB\",\"status\":\"UNPAID\"}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/api/external/payments/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"external",
+						"payments",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,110 @@
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: docker/nginx/Dockerfile
+        container_name: nginx
+        restart: always
+        ports:
+            - "8083:80"
+        volumes:
+            - ./:/var/www/
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+        environment:
+            - BASIC_AUTH_USER=${BASIC_AUTH_USER:-admin}
+            - BASIC_AUTH_PASSWORD=${BASIC_AUTH_PASSWORD:-admin}
+        networks:
+            - web
+
+    php:
+        container_name: php
+        build:
+            context: .
+            dockerfile: docker/php/fpm/Dockerfile
+        restart: always
+        volumes:
+            - ./:/var/www
+        networks:
+            - web
+
+    php_octane:
+        container_name: php_octane
+        build:
+            context: .
+            dockerfile: docker/php/octane/Dockerfile
+        restart: always
+        volumes:
+            - ./:/var/www
+        expose:
+            - "8000"
+        networks:
+            - web
+
+    horizon:
+        build:
+            context: .
+            dockerfile: docker/php/fpm/Dockerfile
+        container_name: horizon
+        volumes:
+            - ./:/var/www
+        command: php artisan horizon
+        depends_on:
+            - redis
+        networks:
+            - web
+
+    mariadb:
+        image: mariadb:10.11
+        container_name: mariadb
+        restart: always
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-dev}
+            MYSQL_USER: ${DB_USERNAME:-dev}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-dev}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-dev}
+        ports:
+            - "3306:3306"
+        volumes:
+            - mariadb_data:/var/lib/mysql
+        networks:
+            - web
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "6379:6379"
+        networks:
+            - web
+
+    node:
+        image: node:20
+        container_name: node
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        entrypoint: ["tail", "-f", "/dev/null"]
+        networks:
+            - web
+
+    phpmyadmin:
+        container_name: phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        environment:
+            PMA_HOST: mariadb
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-dev}
+            UPLOAD_LIMIT: 300M
+        depends_on:
+            - mariadb
+        ports:
+            - "8082:80"
+        networks:
+            - web
+
+volumes:
+    mariadb_data:
+
+networks:
+    web:
+        driver: bridge

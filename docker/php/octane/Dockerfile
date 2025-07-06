@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libonig-dev \
     libxml2-dev \
     libgmp-dev \
+    pkg-config \
+    libxlswriter-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
     pdo \
@@ -26,8 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     exif \
     fileinfo \
     pcntl \
-    && pecl install redis swoole \
-    && docker-php-ext-enable redis swoole \
+    && pecl install redis swoole xlswriter \
+    && docker-php-ext-enable redis swoole xlswriter \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -40,8 +42,6 @@ COPY .. .
 
 RUN composer install --no-dev --optimize-autoloader \
     && php artisan octane:install
-    #&& php artisan config:cache \
-    #&& php artisan route:cache
 
 EXPOSE 8083
 

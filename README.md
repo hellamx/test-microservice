@@ -25,7 +25,21 @@
     docker compose up -d --build
     ```
 
-3. Настройка `laravel`:
+3. composer
+
+    ```bash
+    composer install --ignore-platform-reqs
+    ```
+
+    ```bash
+    docker compose down
+    ```
+
+    ```bash
+    docker compose up -d
+    ```
+
+4. Настройка `laravel`:
 
     ```bash
     docker exec -it php bash
@@ -34,7 +48,7 @@
     php artisan db:seed
     ```
 
-4. Сборка фронтенда:
+5. Сборка фронтенда:
 
     ```bash
     docker exec -it node bash
@@ -43,6 +57,12 @@
     npm run build
     ```
    
+6. Права
+
+        sudo usermod -aG www-data $USER
+        sudo chown -R www-data:www-data .
+        sudo chmod -R 775 storage bootstrap/cache
+
 ## Интерфейсы:
 
     - Админка и внутреннее API защищены basic auth на уровне nginx (по умолчанию login: `admin`, pass: `admin`)

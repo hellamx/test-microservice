@@ -25,18 +25,7 @@
     docker compose up -d --build
     ```
 
-3. Настройка `laravel`:
-
-    ```bash
-    docker exec -it php bash
-
-    php artisan key:generate
-    php artisan migrate
-    php artisan db:seed
-    php artisan config:cache
-    ```
-
-4. Настройка прав
+3. Настройка прав
 
     ```bash
     sudo usermod -aG www-data $USER
@@ -49,7 +38,19 @@
     ```bash
     sudo chmod -R 775 storage bootstrap/cache
     ```
-       
+
+4. Настройка `laravel`:
+
+    ```bash
+    docker exec -it php bash
+    composer install --ignore-platform-req=ext-xlswriter
+   
+    php artisan key:generate
+    php artisan migrate
+    php artisan db:seed
+    php artisan config:cache
+    ```
+
     ```bash
     docker compose down && docker compose up -d --build
     ```

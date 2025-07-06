@@ -26,16 +26,13 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /var/www
 
+USER www-data
+
 # Копируем composer и только нужные файлы, чтобы не сработал artisan discover
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock artisan bootstrap/app.php ./
-
-# Устанавливаем зависимости
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-xlswriter || true
 
 # Копируем остальное
 COPY . .
 
 COPY ./docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
-
-USER www-data

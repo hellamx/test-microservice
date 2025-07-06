@@ -18,12 +18,15 @@ services:
 
     php:
         container_name: php
+
         build:
             context: .
             dockerfile: docker/php/fpm/Dockerfile
         restart: always
+        user: www-data
         volumes:
             - ./:/var/www
+            - vendor_data:/var/www/vendor
         networks:
             - web
 
@@ -35,6 +38,7 @@ services:
         restart: always
         volumes:
             - ./:/var/www
+            - vendor_data:/var/www/vendor
         expose:
             - "8000"
         networks:
@@ -47,6 +51,7 @@ services:
         container_name: horizon
         volumes:
             - ./:/var/www
+            - vendor_data:/var/www/vendor
         command: php artisan horizon
         depends_on:
             - redis
@@ -104,6 +109,7 @@ services:
 
 volumes:
     mariadb_data:
+    vendor_data:
 
 networks:
     web:

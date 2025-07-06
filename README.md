@@ -30,7 +30,6 @@
     ```bash
     docker exec -it php bash
 
-    composer install
     php artisan key:generate
     php artisan migrate
     php artisan db:seed
@@ -60,6 +59,7 @@
     ```bash
     docker exec -it node bash
 
+    npm install
     npm run build
     ```
    

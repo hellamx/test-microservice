@@ -4,44 +4,34 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     zip \
-    curl \
-    libzip-dev \
+    libpq-dev \
     libpng-dev \
     libwebp-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libpq-dev \
-    libonig-dev \
-    libxml2-dev \
+    libzip-dev \
+    libgd-dev \
     libgmp-dev \
-    pkg-config \
     autoconf \
     make \
     gcc \
     g++ \
+    pkg-config \
+    cmake \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
-        pdo \
-        pdo_mysql \
-        zip \
-        bcmath \
-        gd \
-        gmp \
-        exif \
-        fileinfo \
-        pcntl \
+       pdo_mysql \
+       bcmath \
+       gd \
+       zip \
+       exif \
+       gmp \
+       fileinfo \
+       pcntl \
     && pecl install redis swoole \
-    && docker-php-ext-enable redis swoole
-
-# xlswriter
-RUN git clone --depth=1 https://github.com/viest/php-ext-xlswriter.git /tmp/xlswriter \
-    && cd /tmp/xlswriter \
-    && phpize \
-    && ./configure \
-    && make \
-    && make install \
-    && docker-php-ext-enable xlswriter \
-    && rm -rf /tmp/xlswriter
+    && docker-php-ext-enable redis swoole \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -50,7 +40,7 @@ WORKDIR /var/www
 
 COPY .. .
 
-RUN composer install --no-dev --optimize-autoloader \
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-xlswriter \
     && php artisan octane:install
 
 EXPOSE 8083

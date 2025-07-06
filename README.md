@@ -19,13 +19,20 @@
     cp .env.example .env
     ```
    
-2. Сборка контейнеров:
+2. Composer
+
+    ```bash 
+   curl -sS https://getcomposer.org/installer | php && sudo mv composer.phar /usr/local/bin/composer && sudo chmod +x /usr/local/bin/composer 
+   composer install --optimize-autoloader --ignore-platform-req=ext-xlswriter
+   ```
+
+3. Сборка контейнеров:
 
     ```bash
     docker compose up -d --build
     ```
 
-3. Настройка прав
+4. Настройка прав
 
     ```bash
     sudo usermod -aG www-data $USER
@@ -39,12 +46,10 @@
     sudo chmod -R 775 storage bootstrap/cache
     ```
 
-4. Настройка `laravel`:
+5. Настройка `laravel`:
 
     ```bash
     docker exec -it php bash
-    composer install --ignore-platform-req=ext-xlswriter
-   
     php artisan key:generate
     php artisan migrate
     php artisan db:seed
@@ -54,8 +59,12 @@
     ```bash
     docker compose down && docker compose up -d --build
     ```
+       
+    ```bash 
+    docker exec php_octane php artisan octane:install
+    ```
 
-5. Сборка фронтенда:
+6. Сборка фронтенда:
 
     ```bash
     docker exec -it node bash

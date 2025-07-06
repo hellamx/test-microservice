@@ -3,6 +3,7 @@ FROM php:8.3-fpm
 RUN apt-get update && apt-get install -y \
         git \
         unzip \
+        curl \
         libpng-dev \
         libwebp-dev \
         libjpeg-dev \
@@ -24,15 +25,16 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Установка composer
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && chmod +x /usr/local/bin/composer
+
 WORKDIR /var/www
 
-USER www-data
-
-# Копируем composer и только нужные файлы, чтобы не сработал artisan discover
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-COPY composer.json composer.lock artisan bootstrap/app.php ./
-
-# Копируем остальное
 COPY . .
 
 COPY ./docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
+
+RUN chown -R www-data:www-data /var/www
+USER www-data

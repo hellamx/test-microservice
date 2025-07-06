@@ -20,19 +20,26 @@ RUN apt-get update && apt-get install -y \
 # Установка Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Создаем рабочую директорию
 WORKDIR /var/www
 
-# Копируем зависимости сначала
-COPY --chown=www-data:www-data composer.json composer.lock ./
+# 1. Копируем ТОЛЬКО файлы, необходимые для composer
+COPY composer.json composer.lock artisan ./
 
-# Устанавливаем зависимости под правильным пользователем
-USER www-data
-RUN composer install --no-interaction --optimize-autoloader
+# 2. Устанавливаем зависимости (без выполнения скриптов)
+RUN composer install --no-interaction --no-scripts --optimize-autoloader
 
-# Копируем остальные файлы
-COPY --chown=www-data:www-data . .
+# 3. Копируем ВСЕ остальные файлы
+COPY . .
+
+# 4. Теперь выполняем скрипты post-install
+RUN composer run-script post-autoload-dump
+
+# Устанавливаем правильные права
+RUN chown -R www-data:www-data /var/www
 
 # Дополнительные настройки PHP
 COPY ./docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
 
+USER www-data
 CMD ["php-fpm"]

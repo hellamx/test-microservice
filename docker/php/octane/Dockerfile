@@ -22,16 +22,21 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /var/www
 
-# Копируем зависимости сначала
-COPY --chown=www-data:www-data composer.json composer.lock ./
+# 1. Копируем ТОЛЬКО файлы, необходимые для composer
+COPY composer.json composer.lock artisan ./
 
-# Устанавливаем зависимости
+# 2. Устанавливаем зависимости (без выполнения скриптов)
+RUN composer install --no-interaction --no-scripts --optimize-autoloader
+
+# 3. Копируем ВСЕ остальные файлы
+COPY . .
+
+# 4. Теперь выполняем скрипты post-install
+RUN composer run-script post-autoload-dump
+
+# Устанавливаем правильные права
+RUN chown -R www-data:www-data /var/www
+
 USER www-data
-RUN composer install --no-interaction --optimize-autoloader
-
-# Копируем остальные файлы
-COPY --chown=www-data:www-data . .
-
 EXPOSE 8000
-
 CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8000"]

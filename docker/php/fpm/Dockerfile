@@ -39,7 +39,7 @@ COPY . .
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-xlswriter
 
 # Устанавливаем владельца
 RUN chown -R www-data:www-data /var/www

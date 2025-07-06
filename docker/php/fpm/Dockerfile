@@ -37,6 +37,8 @@ COPY ./docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+RUN composer install --no-dev --optimize-autoloader
+
 # Устанавливаем владельца
 RUN chown -R www-data:www-data /var/www
 

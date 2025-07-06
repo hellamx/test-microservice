@@ -1,6 +1,5 @@
 FROM php:8.3-cli
 
-# Устанавливаем системные зависимости
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -16,22 +15,33 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2-dev \
     libgmp-dev \
     pkg-config \
-    libxlswriter-dev \
+    autoconf \
+    make \
+    gcc \
+    g++ \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
-    pdo \
-    pdo_mysql \
-    zip \
-    bcmath \
-    gd \
-    gmp \
-    exif \
-    fileinfo \
-    pcntl \
-    && pecl install redis swoole xlswriter \
-    && docker-php-ext-enable redis swoole xlswriter \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+        pdo \
+        pdo_mysql \
+        zip \
+        bcmath \
+        gd \
+        gmp \
+        exif \
+        fileinfo \
+        pcntl \
+    && pecl install redis swoole \
+    && docker-php-ext-enable redis swoole
+
+# xlswriter
+RUN git clone --depth=1 https://github.com/viest/php-ext-xlswriter.git /tmp/xlswriter \
+    && cd /tmp/xlswriter \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && docker-php-ext-enable xlswriter \
+    && rm -rf /tmp/xlswriter
 
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

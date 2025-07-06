@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Копируем кастомный php.ini
 COPY ./docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
 
+COPY . .
+
 # Устанавливаем Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
